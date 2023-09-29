@@ -1,0 +1,16 @@
+sub init()
+    m.top.observeField("width", "onSizeChange")
+    m.top.observeField("height", "onSizeChange")
+end sub
+
+sub onSizeChange(event as object)
+    ? event.getField() event.getData()
+    label = m.top.findNode("label")
+    label.width = m.top.width
+    label.height = m.top.height
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    ? key " " press " in " m.top.id "/" m.top.subtype()
+    return false
+end function

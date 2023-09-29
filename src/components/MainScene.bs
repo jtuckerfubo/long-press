@@ -1,0 +1,19 @@
+import "pkg:/components/KeyEventAdapter.bs"
+
+sub init()
+    m.top.setFocus(true)
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    ? key " " press " in " m.top.id "/" m.top.subtype()
+
+    keyevent.onKeyEvent(key, press)
+    longKeyPressed = keyevent.getLongKeyPressed(key)
+
+    if { back: true, options: true, fastforward: true, rewind: true }[longKeyPressed] = true then
+        ? "******* Long key " + longKeyPressed + " pressed *********"
+    end if
+
+    if key = "back" then return true ' prevent app exit via back key
+    return false
+end function

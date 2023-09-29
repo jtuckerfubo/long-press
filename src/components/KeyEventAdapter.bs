@@ -1,0 +1,40 @@
+namespace keyevent
+
+const LONG_PRESS_DURATION = 500 'milliseconds
+const LONG_PRESS_PREFIX = "longpress"
+const LONG_PRESS_SEPARATOR = ":"
+
+function getLongPressTimeout() as integer
+    return LONG_PRESS_DURATION
+end function
+
+function getLongKeyPressed(key as string) as string
+    retval = invalid
+    args = key.tokenize(LONG_PRESS_SEPARATOR)
+    if args[0] = LONG_PRESS_PREFIX then
+        retval = args[1]
+    end if
+    return retval.tostr()
+end function
+
+sub onKeyEvent(key as string, press as boolean) 
+    datetime = createObject("roDateTime")
+    seconds& = datetime.asSeconds() * 1000&
+    millis& = datetime.getMilliseconds()
+    time = seconds& + millis&
+    if press then
+        m.__key_press_time = time
+        m.__key_pressed = key
+    else
+        prevkey = m.__key_pressed
+        m.__key_pressed = ""
+        if prevkey = key then
+            if time - LONG_PRESS_DURATION >= m.__key_press_time then
+                key = LONG_PRESS_PREFIX+LONG_PRESS_SEPARATOR+key
+                m.top.callFunc("onKeyEvent", key, false)
+            end if
+        end if
+    end if
+end sub
+
+end namespace

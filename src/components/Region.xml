@@ -1,0 +1,14 @@
+<component name="Region" extends="Rectangle">
+    <interface>
+        <field id="labelText" type="string" alias="label.text" />
+    </interface>
+    <children>
+        <Label 
+            id="label"
+            font="font:LargeBoldSystemFont"
+            color="#000000"
+            horizAlign="center"
+            vertAlign="center"
+        />
+    </children>
+</component>
