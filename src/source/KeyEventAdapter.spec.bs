@@ -10,6 +10,14 @@ namespace tests
         @describe("test key event adapter")
         '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+        @beforeEach
+        function _()
+            ' reset test fields
+            m.node.top.key = ""
+            m.node.top.press =  false
+            m.node.top.longPress = false 
+        end function
+
         @it("get long press timeout")
         function _()
             duration = keyevent.getLongPressTimeout()
@@ -20,22 +28,23 @@ namespace tests
         @it("test key press")
         function _()
             keyName = "TheKey"
+            isPressed = true
             m.assertTrue(keyName <> m.top.key)
-            onKeyEvent(keyName, true) 'bs:disable-line
-            m.assertTrue(keyName = m.top.key)
+            onKeyEvent(keyName, isPressed) 'bs:disable-line
+            m.assertTrue(keyName = m.top.key and isPressed = m.top.press)
         end function
 
         @async
-        @it("long pres test")
+        @it("long press test")
         function _()
-            m.node.top.key = ""
             m.timer = createObject("rosgnode", "timer")
             m.timer.observeField("fire", (sub()
                 ' step 2: release back button
-                stop
                 onKeyEvent("back", false) 'bs:disable-line
 
                 m.testSuite.assertTrue(m.testSuite.node.top.key = "back")
+                m.testSuite.assertFalse(m.testSuite.node.top.press)
+                m.testSuite.assertTrue(m.testSuite.node.top.longPress)
                 m.testSuite.done()
             end sub).tostr().split(" ")[1])
 
@@ -44,33 +53,17 @@ namespace tests
             m.timer.control = "start"
         end function
 
-        ' @async
-        ' @it("long press test")
-        ' function _()
-        '     m.timer = createObject("rosgnode", "timer")
-        '     m.timer.duration = keyevent.getLongPressTimeout() + 1 'bs:disable-line
-        '     m.timer.observeFieldScoped("fire", (sub()
-        '         ? "hi"
-        '         m.testSuite.done()
-        '     end sub).tostr().split(" ")[1])
-        '     m.timer.control = "start"
-        '     ' m.timer.observeField("fire", (function()
-        '         ' onKeyEvent("back", false) 'bs:disable-line
-        '         ' m.testSuite.assertTrue(true)
-        '         ' m.testSuite.done()
-        '     ' end function).tosr().split(" ")[1])
+        @it("short press test")
+        function _()
+            ' step 1: press play button
+            onKeyEvent("play", true) 'bs:disable-line
+            ' step 2: release play button
+            onKeyEvent("play", false) 'bs:disable-line
 
-
-        '     ' m.timer.observeField("fire", (sub()
-        '     ' onKeyEvent("back", false) 'bs:disable-line
-        '     ' m.testSuite.assertTrue(true)
-        '     ' m.testSuite.done()
-        '     ' end sub).tosr().split(" ")[1])
-
-        '     ' ' simulate long key press
-        '     ' ' onKeyEvent("back", true) 'bs:disable-line
-        '     ' m.timer.control = "start"
-        ' end function
+            m.assertTrue(m.node.top.key = "play")
+            m.assertFalse(m.node.top.press)
+            m.assertFalse(m.node.top.longPress)
+        end function
 
     end class
 end namespace

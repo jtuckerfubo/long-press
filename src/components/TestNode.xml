@@ -1,6 +1,7 @@
 <component name="TestNode" extends="Group">
     <interface>
         <field id="key" type="string" />
-        <function name="onKeyEvent" />
+        <field id="press" type="bool" />
+        <field id="longPress" type="bool" />
     </interface>
 </component>

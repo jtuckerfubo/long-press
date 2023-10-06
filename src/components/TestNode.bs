@@ -5,7 +5,8 @@ sub init()
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    keyevent.onKeyEvent(key, press)
     m.top.key = key
+    m.top.press = press
+    m.top.longPress = keyevent.isLongPress(key, press)
     return false
 end function

@@ -1,26 +1,23 @@
 namespace keyevent
 
 const LONG_PRESS_DURATION = 500 'milliseconds
-const LONG_PRESS_PREFIX = "longpress"
-const LONG_PRESS_SEPARATOR = ":"
 
 function getLongPressTimeout() as integer
     return LONG_PRESS_DURATION
 end function
 
-' return key identified to have been long pressed, otherwise invalid
-function getLongPressKey(key as string) as dynamic
-    retval = invalid
-    args = key.tokenize(LONG_PRESS_SEPARATOR)
-    if args[0] = LONG_PRESS_PREFIX then
-        retval = args[1]
-    end if
-    return retval
-end function
-
-' if the key event is a long press then call node scoped onKeyEvent with a custom key 
-' return true for a long press, otherwise false
-function onKeyEvent(key as string, press as boolean) as boolean
+' determines if a key event is a long press or not
+' long presses are detected on the button release (press = false) 
+'
+' suggested usage for rc keys in specific node instances where you care about long press detection:
+' 1. can be used narrowly in specific nodes
+' 2. can be used narrowly with specific rc keys
+' 3. call this at the top of onKeyEvent() for true and false press states
+' 4. when press = true, return true for these specific rc keys 
+' see Region.onKeyEvent() in example project
+' 
+' returns true when a long press is detected, otherwise false
+function isLongPress(key as string, press as boolean) as boolean
     datetime = createObject("roDateTime")
     seconds& = datetime.asSeconds() * 1000&
     millis& = datetime.getMilliseconds()
@@ -33,8 +30,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m.__key_pressed = ""
         if prevkey = key then
             if time - LONG_PRESS_DURATION >= m.__key_press_time then
-                key = LONG_PRESS_PREFIX+LONG_PRESS_SEPARATOR+key
-                m.top.callFunc("onKeyEvent", key, false)
                 return true
             end if
         end if

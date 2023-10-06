@@ -1,7 +1,4 @@
 <component name="MainScene" extends="Scene">
-    <interface>
-        <function name="onKeyEvent"/>
-    </interface>
     <children>
         <Region id="go" labelText="GO!" width="500" height="700" color="#00ff00" translation="[0,0]"/>
         <Region id="yield" labelText="wait..." width="400" height="400" color="#ffff00" translation="[400,50]"/>

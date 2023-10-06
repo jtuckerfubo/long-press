@@ -7,16 +7,8 @@ sub init()
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    ? m.top.id "/" m.top.subtype()".onKeyEvent received: " key " " press 
-
-    ' keyevent.onKeyEvent(key, press)
-    ' longKeyPressed = keyevent.getLongKeyPressed(key)
-
-    ' if { back: true, options: true, fastforward: true, rewind: true }[longKeyPressed] = true then
-        ' ? "******* Long key " + longKeyPressed + " pressed *********"
-    ' end if
-
+    ? m.top.subtype() "/" m.top.id ".onKeyEvent received: " key " " press 
     retval = key = "back" ? true : false 'prevent app exit via back key
-    ? m.top.id "/" m.top.subtype() " returns " retval
+    ? m.top.subtype() "/" m.top.id " returns " retval 
     return retval
 end function
