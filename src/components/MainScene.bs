@@ -1,19 +1,22 @@
-import "pkg:/components/KeyEventAdapter.bs"
+import "pkg:/source/KeyEventAdapter.bs"
 
 sub init()
-    m.top.setFocus(true)
+    ' m.top.setFocus(true)
+    go = m.top.findNode("go")
+    go.setFocus(true)
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    ? key " " press " in " m.top.id "/" m.top.subtype()
+    ? m.top.id "/" m.top.subtype()".onKeyEvent received: " key " " press 
 
-    keyevent.onKeyEvent(key, press)
-    longKeyPressed = keyevent.getLongKeyPressed(key)
+    ' keyevent.onKeyEvent(key, press)
+    ' longKeyPressed = keyevent.getLongKeyPressed(key)
 
-    if { back: true, options: true, fastforward: true, rewind: true }[longKeyPressed] = true then
-        ? "******* Long key " + longKeyPressed + " pressed *********"
-    end if
+    ' if { back: true, options: true, fastforward: true, rewind: true }[longKeyPressed] = true then
+        ' ? "******* Long key " + longKeyPressed + " pressed *********"
+    ' end if
 
-    if key = "back" then return true ' prevent app exit via back key
-    return false
+    retval = key = "back" ? true : false 'prevent app exit via back key
+    ? m.top.id "/" m.top.subtype() " returns " retval
+    return retval
 end function

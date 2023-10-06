@@ -1,0 +1,11 @@
+import "pkg:/source/KeyEventAdapter.bs"
+
+sub init()
+    m.top.setFocus(true)
+end sub
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    keyevent.onKeyEvent(key, press)
+    m.top.key = key
+    return false
+end function

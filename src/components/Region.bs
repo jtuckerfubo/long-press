@@ -1,3 +1,5 @@
+import "pkg:/source/KeyEventAdapter.bs"
+
 sub init()
     m.top.observeField("width", "onSizeChange")
     m.top.observeField("height", "onSizeChange")
@@ -11,6 +13,28 @@ sub onSizeChange(event as object)
 end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
-    ? key " " press " in " m.top.id "/" m.top.subtype()
-    return false
+    ? m.top.id "/" m.top.subtype()".onKeyEvent received: " key " " press
+
+    retval = keyevent.onKeyEvent(key, press)
+
+    if not retval then
+        if press then
+            if key = "play" then
+                ? "play was pressed!"
+                retval = true
+            end if
+        else if not press then
+            longPressKey = keyevent.getLongPressKey(key)
+            if longPressKey = "back" then
+                ? "back was long pressed!"
+                retval = true
+            else if key = "back" then
+                ? "back was short pressed!"
+                retval = true
+            end if
+        end if
+    end if
+
+    ? m.top.id "/" m.top.subtype() " returns " retval
+    return retval
 end function

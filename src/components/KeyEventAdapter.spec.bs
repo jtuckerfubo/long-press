@@ -1,0 +1,76 @@
+import "pkg:/source/KeyEventAdapter.bs"
+
+namespace tests
+    @async
+    @SGNode("TestNode")
+    @suite("[KEA] KeyEventAdapterTests")
+    class KeyEventAdapterTests extends rooibos.BaseTestSuite
+
+        '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        @describe("test key event adapter")
+        '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        @it("get long press timeout")
+        function _()
+            duration = keyevent.getLongPressTimeout()
+            b = rooibos.common.isNumber(duration)
+            m.assertTrue(b, "getLongPressTimeout should return a number")
+        end function
+
+        @it("test key press")
+        function _()
+            keyName = "TheKey"
+            m.assertTrue(keyName <> m.top.key)
+            onKeyEvent(keyName, true) 'bs:disable-line
+            m.assertTrue(keyName = m.top.key)
+        end function
+
+        @async
+        @it("long pres test")
+        function _()
+            m.node.top.key = ""
+            m.timer = createObject("rosgnode", "timer")
+            m.timer.observeField("fire", (sub()
+                ' step 2: release back button
+                stop
+                onKeyEvent("back", false) 'bs:disable-line
+
+                m.testSuite.assertTrue(m.testSuite.node.top.key = "back")
+                m.testSuite.done()
+            end sub).tostr().split(" ")[1])
+
+            ' step 1: press back button and wait
+            onKeyEvent("back", true) 'bs:disable-line
+            m.timer.control = "start"
+        end function
+
+        ' @async
+        ' @it("long press test")
+        ' function _()
+        '     m.timer = createObject("rosgnode", "timer")
+        '     m.timer.duration = keyevent.getLongPressTimeout() + 1 'bs:disable-line
+        '     m.timer.observeFieldScoped("fire", (sub()
+        '         ? "hi"
+        '         m.testSuite.done()
+        '     end sub).tostr().split(" ")[1])
+        '     m.timer.control = "start"
+        '     ' m.timer.observeField("fire", (function()
+        '         ' onKeyEvent("back", false) 'bs:disable-line
+        '         ' m.testSuite.assertTrue(true)
+        '         ' m.testSuite.done()
+        '     ' end function).tosr().split(" ")[1])
+
+
+        '     ' m.timer.observeField("fire", (sub()
+        '     ' onKeyEvent("back", false) 'bs:disable-line
+        '     ' m.testSuite.assertTrue(true)
+        '     ' m.testSuite.done()
+        '     ' end sub).tosr().split(" ")[1])
+
+        '     ' ' simulate long key press
+        '     ' ' onKeyEvent("back", true) 'bs:disable-line
+        '     ' m.timer.control = "start"
+        ' end function
+
+    end class
+end namespace

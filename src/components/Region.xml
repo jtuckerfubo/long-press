@@ -1,6 +1,7 @@
 <component name="Region" extends="Rectangle">
     <interface>
         <field id="labelText" type="string" alias="label.text" />
+        <function name="onKeyEvent"/>
     </interface>
     <children>
         <Label 

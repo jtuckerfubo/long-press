@@ -8,16 +8,19 @@ function getLongPressTimeout() as integer
     return LONG_PRESS_DURATION
 end function
 
-function getLongKeyPressed(key as string) as string
+' return key identified to have been long pressed, otherwise invalid
+function getLongPressKey(key as string) as dynamic
     retval = invalid
     args = key.tokenize(LONG_PRESS_SEPARATOR)
     if args[0] = LONG_PRESS_PREFIX then
         retval = args[1]
     end if
-    return retval.tostr()
+    return retval
 end function
 
-sub onKeyEvent(key as string, press as boolean) 
+' if the key event is a long press then call node scoped onKeyEvent with a custom key 
+' return true for a long press, otherwise false
+function onKeyEvent(key as string, press as boolean) as boolean
     datetime = createObject("roDateTime")
     seconds& = datetime.asSeconds() * 1000&
     millis& = datetime.getMilliseconds()
@@ -32,9 +35,11 @@ sub onKeyEvent(key as string, press as boolean)
             if time - LONG_PRESS_DURATION >= m.__key_press_time then
                 key = LONG_PRESS_PREFIX+LONG_PRESS_SEPARATOR+key
                 m.top.callFunc("onKeyEvent", key, false)
+                return true
             end if
         end if
     end if
-end sub
+    return false
+end function
 
 end namespace
